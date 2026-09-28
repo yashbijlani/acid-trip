@@ -1,0 +1,7 @@
+# Flyouts: frosted, gradient-bordered.
+background       = "#0b0418"
+background-alpha = 0.88
+text             = "#d9cdf2"
+border           = "hyprland.active-border"
+border-alpha     = 1.0
+border-width     = 2

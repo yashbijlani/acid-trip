@@ -1,0 +1,11 @@
+background       = "#0b0418"
+background-alpha = 0.7
+text             = "#d9cdf2"
+placeholder      = "#7a6aa0"
+text-error       = "#ff2e63"
+border           = "hyprland.active-border"
+border-active    = "hyprland.active-border"
+border-error     = "#ff2e63"
+border-alpha     = 1.0
+selection        = "#ff2bd6"
+selection-alpha  = 0.45

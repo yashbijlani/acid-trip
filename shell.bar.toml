@@ -1,0 +1,9 @@
+# Translucent bar so the theme blur shows through; accent is also used as the
+# "active" colour (urgent indicators, and the focused workspace pill below).
+background       = "#0b0418"
+background-alpha = 0.72
+text             = "#d9cdf2"
+active           = "#ff2bd6"
+scale-with-font  = true
+size-horizontal  = 30
+size-vertical    = 32

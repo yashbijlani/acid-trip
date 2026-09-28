@@ -1,0 +1,3 @@
+# A little more breathing room everywhere.
+scale           = 1.06
+scale-with-font = true

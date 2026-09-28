@@ -1,0 +1,7 @@
+# Accent the chosen/current chrome (menu rows, tab strips, dropdowns).
+selected-color        = "#f1e9ff"
+selected-fill-alpha   = 0.2
+selected-border       = "#ff2bd6"
+selected-border-width = 0
+focus-border          = "#ff2bd6"
+focus-border-alpha    = 0.5
