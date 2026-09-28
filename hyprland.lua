@@ -132,16 +132,3 @@ hl.layer_rule({
   ignore_alpha = 0.2,
 })
 
--- Music visualizer: float it, pin it across every workspace, park it
--- bottom-right, and drop its own border/rounding.
-hl.window_rule({
-  match = { class = "^acid-visualizer$" },
-  float = true,
-  pin = true,
-  no_initial_focus = true,
-  size = { 460, 140 },
-  move = { "monitor_w-474", "monitor_h-158" },
-  border_size = 0,
-  rounding = 0,
-  opacity = "1.0 override 1.0 override 1.0 override",
-})
