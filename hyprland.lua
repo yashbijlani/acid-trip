@@ -81,16 +81,25 @@ local config = {
 
 -- Only point at the shader (and pay for damage_tracking=0) when it is present.
 local shader_file = io.open(shader, "r")
+local shader_present = shader_file ~= nil
 if shader_file then
   shader_file:close()
-  config.decoration.screen_shader = shader
-  config.debug = {
-    damage_tracking = 0, -- required for the shader's `time` uniform
-    vfr = false,         -- otherwise Hyprland idles and the animation stutters
-  }
 end
 
 hl.config(config)
+
+if shader_present then
+  -- ORDER MATTERS: damage tracking must be off *before* the shader is set,
+  -- or Hyprland raises the "uniform 'time' requires debug:damage_tracking to
+  -- be switched off" parse error (red overlay) and the animation freezes.
+  hl.config({
+    debug = {
+      damage_tracking = 0,
+      vfr = false, -- otherwise Hyprland idles and the animation stutters
+    },
+  })
+  hl.config({ decoration = { screen_shader = shader } })
+end
 
 -- Rubbery, not corporate-snappy.
 hl.curve("acidSpring", { type = "bezier", points = { { 0.34, 1.56 }, { 0.64, 1.0 } } })
@@ -121,4 +130,18 @@ hl.layer_rule({
   blur = true,
   blur_popups = true,
   ignore_alpha = 0.2,
+})
+
+-- Music visualizer: float it, pin it across every workspace, park it
+-- bottom-right, and drop its own border/rounding.
+hl.window_rule({
+  match = { class = "^acid-visualizer$" },
+  float = true,
+  pin = true,
+  no_initial_focus = true,
+  size = { 460, 140 },
+  move = { "monitor_w-474", "monitor_h-158" },
+  border_size = 0,
+  rounding = 0,
+  opacity = "1.0 override 1.0 override 1.0 override",
 })
