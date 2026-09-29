@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# Toggle the heavy Acid Trip desktop effects at runtime.
+#
+#   acid-trip-effects [on|off|toggle]     (default: toggle)
+#
+# "off" = plain desktop: screen shader cleared, damage tracking restored to
+# Hyprland's default, the borderangle loop stopped, and blur turned off.
+# Useful before screen sharing, calls, or when you need the battery back.
+# "on" re-asserts everything (it also comes back on the next config reload,
+# since the theme owns these settings).
+#
+# Hyprland 0.56 dropped the hyprlang parser, so `hyprctl keyword` no longer
+# works -- runtime options are changed with `hyprctl eval` (Lua) instead.
+set -u
+
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/acid-trip"
+STATE_FILE="$STATE_DIR/effects-off"
+SHADER="$HOME/.config/hypr/shaders/acid-trip.frag"
+
+mkdir -p "$STATE_DIR"
+
+notify() {
+  if command -v omarchy-notification-send >/dev/null 2>&1; then
+    omarchy-notification-send "$1" >/dev/null 2>&1 || true
+  fi
+}
+
+set_on() {
+  # damage_tracking first, then the shader -- order matters (see theme config).
+  hyprctl eval 'hl.config({ debug = { damage_tracking = 0, vfr = false } })' >/dev/null 2>&1 || true
+  hyprctl eval 'hl.config({ decoration = { blur = { enabled = true } } })' >/dev/null 2>&1 || true
+  hyprctl eval 'hl.config({ decoration = { screen_shader = "'"$SHADER"'" } })' >/dev/null 2>&1 || true
+  hyprctl eval 'hl.animation({ leaf = "borderangle", enabled = true, speed = 14, bezier = "acidLinear", style = "loop" })' >/dev/null 2>&1 || true
+  rm -f "$STATE_FILE"
+  notify "Acid Trip effects: ON"
+}
+
+set_off() {
+  # clear the shader before re-enabling damage tracking.
+  hyprctl eval 'hl.config({ decoration = { screen_shader = "" } })' >/dev/null 2>&1 || true
+  hyprctl eval 'hl.config({ debug = { damage_tracking = 2, vfr = true } })' >/dev/null 2>&1 || true
+  hyprctl eval 'hl.config({ decoration = { blur = { enabled = false } } })' >/dev/null 2>&1 || true
+  hyprctl eval 'hl.animation({ leaf = "borderangle", enabled = false })' >/dev/null 2>&1 || true
+  touch "$STATE_FILE"
+  notify "Acid Trip effects: OFF (plain desktop)"
+}
+
+case "${1:-toggle}" in
+  on) set_on ;;
+  off) set_off ;;
+  toggle)
+    if [[ -f $STATE_FILE ]]; then set_on; else set_off; fi
+    ;;
+  *)
+    echo "usage: acid-trip-effects [on|off|toggle]" >&2
+    exit 2
+    ;;
+esac

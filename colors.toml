@@ -29,3 +29,10 @@ bright_green = "#9dff4d"
 bright_cyan = "#93fbff"
 bright_blue = "#8aa0ff"
 bright_magenta = "#ff86ea"
+
+# Colour-only static border gradient. Omarchy's generated hyprland.lua reads
+# these tokens, so the plain theme gets a magenta -> blue -> green border
+# without shipping any code. The animated rotation, screen shader and motion
+# come from the optional fx/ layer.
+hyprland_active_border = "magenta blue green 45deg"
+hyprland_inactive_border = "rgba(46325faa)"
