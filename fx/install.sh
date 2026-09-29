@@ -133,8 +133,16 @@ apply_fence() { # file start end bodyfile
   strip_fence "$file" "$start" "$end"
   if (( DRY_RUN )); then log "would: append $FENCE block to $file"; return 0; fi
   mkdir -p "$(dirname "$file")"
+  # Make sure the file ends with a newline, then append the block directly so
+  # uninstall can restore the file byte-for-byte.
+  if [[ -s $file ]]; then
+    last_byte_lines="$(tail -c 1 "$file" | wc -l)"
+    if (( last_byte_lines == 0 )); then
+      printf '\n' >> "$file"
+    fi
+  fi
   {
-    printf '\n%s\n' "$start"
+    printf '%s\n' "$start"
     cat "$body"
     printf '%s\n' "$end"
   } >> "$file"

@@ -58,7 +58,9 @@ backup() {
 strip_fence() { # file start end
   local file="$1" start="$2" end="$3"
   [[ -f $file ]] || return 0
-  grep -qF "$start" "$file" || return 0
+  # The Lua markers start with "--", so pass -- to keep grep from reading the
+  # pattern as an option.
+  grep -qF -- "$start" "$file" || return 0
   if (( DRY_RUN )); then log "would: strip $FENCE block from $file"; return 0; fi
   awk -v s="$start" -v e="$end" '
     index($0, s) { skip = 1 }
